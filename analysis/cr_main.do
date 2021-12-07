@@ -1256,5 +1256,5 @@ label data "SGTF-OMICRON ANALYSIS DATASET: $S_DATE"
 
 save ./output/main.dta, replace
 
-cap log close
+log close
 

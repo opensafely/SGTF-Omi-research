@@ -132,11 +132,24 @@ save "C:\Users\EIDEDGRI\Documents\GitHub\SGTF-CFR-research\lookups\VOC_Data_Engl
 * Drop if unknown SGTF
 drop if !inrange(sgtf,0,1)
 
+* Calculate % SGTF by week
+collapse (mean) sgtf (count) patient_id, by(start_week)
+
+* Display percentage of positive tests with SGTF
+list
+
 * Calculate % SGTF by week and region
-collapse (mean) sgtf (count) patient_id, by(region start_week)
+*collapse (mean) sgtf (count) patient_id, by(region start_week)
 
 gen os_sgtf = sgtf*100
 rename patient_id os_n
+
+summ os_sgtf if start_week <= 44
+
+* Save mean + 2SD SGTF number of cases to local
+
+global p_sgtf = r(mean) // +(2*r(sd))
+disp $p_sgtf
 
 * Merge on PHE data
 /*
@@ -158,18 +171,19 @@ format week_date %td
 
 line os_sgtf start_week, ///
 	ytitle("% of positive tests with SGTF") ///
-	xlabel(40(2)48, valuelabel) ///
-	legend(label(1 "TPP"))
+	xlabel(40(2)48, valuelabel angle(45)) ///
+	yline($p_sgtf)
 graph export ./output/sgtf_perc.svg, as(svg) replace
 graph export ./output/sgtf_perc.pdf, as(pdf) replace
 
-
+/*
 line os_sgtf start_week, by(region) ///
 	ytitle("% of positive tests with SGTF") ///
 	xlabel(40(2)48, valuelabel) ///
 	legend(label(1 "TPP"))
 graph export ./output/sgtf_perc_region.svg, as(svg) replace
 graph export ./output/sgtf_perc_region.pdf, as(pdf) replace
+*/
 
 log close
 

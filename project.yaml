@@ -15,7 +15,7 @@ actions:
     run: stata-mp:latest analysis/cr_main.do
     needs: [generate_cohort]
     outputs:
-     moderately_sensitive:
+      moderately_sensitive:
         log: logs/cr_main.log
       highly_sensitive:
         data: output/main.dta
@@ -28,5 +28,3 @@ actions:
         log: logs/an_summary.log
         figure1: output/sgtf_perc.svg
         figure2: output/sgtf_perc.pdf
-        figure3: output/sgtf_perc_region.svg
-        figure4: output/sgtf_perc_region.pdf
