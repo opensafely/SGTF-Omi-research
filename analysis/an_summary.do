@@ -64,17 +64,19 @@ foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nom
 			table `var' sgtf, contents(count patient_id sum risk_28 mean risk_28 sum cox_death)	
 			}
 
-
-* Tabulate number of hosptial admissions by SGTF and covariates
+*/
+			
+* Tabulate number of AE admissions by SGTF and covariates
 
 foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nomiss smoke_nomiss2 ///
-			obese4cat hh_total_cat home_bin region rural_urban5 comorb_cat start_week {
+			obese4cat region rural_urban5 comorb_cat start_week {
 			
 			noi disp "Table `var'"
-			table `var' sgtf, contents(count patient_id sum end_hosp_test mean end_hosp_test)	
+			table `var' sgtf, contents(count patient_id sum ae_pre_cens sum cox_ae mean cox_ae)	
 			}
 			
-
+/*
+			
 * Tabulate number of ICU admissions by SGTF and covariates
 
 foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nomiss smoke_nomiss2 ///
@@ -171,7 +173,7 @@ format week_date %td
 
 line os_sgtf start_week, ///
 	ytitle("% of positive tests with SGTF") ///
-	xlabel(40(2)48, valuelabel angle(45)) ///
+	xlabel(40(2)50, valuelabel angle(45)) ///
 	yline($p_sgtf)
 graph export ./output/sgtf_perc.svg, as(svg) replace
 graph export ./output/sgtf_perc.pdf, as(pdf) replace

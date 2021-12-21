@@ -78,7 +78,7 @@ replace sgtf=99 if sgtf==.
 gen has_sgtf=0
 replace has_sgtf=1 if inrange(sgtf,0,1)
 
-label define sgtfLab 0 "S-Pos" 1 "S-Neg" 9 "Unclassified" 99 "Blank"
+label define sgtfLab 0 "S-Pos" 1 "S-Fail" 9 "Unclassified" 99 "Blank"
 label values sgtf sgtfLab
 
 
@@ -128,19 +128,16 @@ rename hba1c_percentage_date_date  hba1c_percentage_date
 rename hba1c_mmol_per_mol_date_date  hba1c_mmol_per_mol_date
 rename hiv_date_date hiv_date
 
-* Dates of: covid tests, ONS death
-/* covid_tpp_probable covid_vacc_date ///
-						first_pos_test_sgss sgss_pos_inrange covid_admission_date icu_admission_date ///
-						covid_discharge_date
-*/
-foreach var of varlist 	dereg_date died_date_ons sgss_pos_inrange {
+* Dates of: covid tests, ONS death, vaccinations, etc.
+foreach var of varlist 	dereg_date died_date_ons ae_covid_date ae_any_date vaxdate1 ///
+						vaxdate2 vaxdate3 last_covid_tpp_probable last_pos_test_sgss sgss_pos_inrange {
 		confirm string variable `var'
 		rename `var' _tmp
 		gen `var' = date(_tmp, "YMD")
 		drop _tmp
 		format %d `var'
 }
- 
+
  
 *******************************
 *  Recode implausible values  *
@@ -280,7 +277,6 @@ summ count2, d
 gen utla_group = utla_name
 tab utla_group
 
-/*
 replace utla_group = "Redbridge, Barking and Dagenham" if utla_name == "Barking and Dagenham"
 replace utla_group = "Redbridge, Barking and Dagenham" if utla_name == "Redbridge"
 
@@ -304,7 +300,7 @@ replace utla_group = "Bolton and Tameside" if utla_name == "Bolton"
 replace utla_group = "Bolton and Tameside" if utla_name == "Tameside"
 
 tab utla_group, m
-*/
+
 
 
 * NHS England regions
@@ -613,11 +609,9 @@ foreach var of varlist	chronic_respiratory_disease_date 	///
 *  Epidemiological week  *
 **************************
 
-*gen start_week = 54 if study_start <= date("11jan2021", "DMY")
-*replace start_week = 53 if study_start <= date("03jan2021", "DMY")
-*replace start_week = 52 if study_start <= date("27dec2020", "DMY")
-
-gen start_week = 48 if study_start <= date("04dec2021", "DMY")
+gen start_week = 50 if study_start <= date("18dec2021", "DMY")
+replace start_week = 49 if study_start <= date("11dec2021", "DMY")
+replace start_week = 48 if study_start <= date("04dec2021", "DMY")
 replace start_week = 47 if study_start <= date("27nov2021", "DMY")
 replace start_week = 46 if study_start <= date("20nov2021", "DMY")
 replace start_week = 45 if study_start <= date("13nov2021", "DMY")
@@ -638,6 +632,8 @@ label define start_weekLab	40 "03Oct-09Oct" ///
 							46 "14Nov-20Nov" ///
 							47 "21Nov-27Nov" ///
 							48 "28Nov-04Dec" ///
+							49 "05Dec-11Dec" ///
+							50 "12Dec-18Dec"
 
 							
 label values start_week start_weekLab
@@ -937,6 +933,10 @@ tab comorb_cat, m
 
 /*  28-day risk censoring dates  */
 
+noi di "REMEMBER TO UPDATE DATE OF EC DATA UPLOAD"
+gen ec_data_date = date("17dec2021", "DMY")
+gen ec_data_cens = ec_data_date-7				// Censor AE data 1 week prior to data upload
+
 /*
 
 noi di "REMEMBER TO UPDATE DATE OF ONS DATA UPLOAD"
@@ -955,7 +955,15 @@ gen risk_pop_40 = (risk_40_days <= ons_data_cens)	// Indicator for has 40-days f
 gen time_check_40 = ons_data_cens-study_start
 summ time_check_40 if risk_pop_40 == 1, d
 
+*/
+
 /*   Outcomes   */
+
+gen ae_pre_cens = (ae_covid_date < ec_data_cens)
+gen ae_time = ae_covid_date-study_start if ae_pre_cens == 1
+summ ae_time, d
+
+/*
 
 * 28-day risk indicator
 gen died_pre_cens = (died_date_ons < ons_data_cens)
@@ -969,11 +977,26 @@ tab died_pre_cens risk_28, row
 gen risk_40 = (death_time <= 40)
 tab died_pre_cens risk_40, row
 
+*/
+
+
+
 /* Survival time */
 
 * Censoring date for Cox
-gen vacc_cens = covid_vacc_date - 7 if covid_vacc_date != .
-gen cox_pop = (study_start < vacc_cens)			// Exclude if vaccinated within 7 days
+gen cox_pop = (study_start < ec_data_cens)			// Include if data before EC data censor
+
+* Censor at death or EC data censor
+gen ae_surv_d = min(ae_covid_date, died_date_ons, ec_data_cens)
+
+gen cox_ae = (ae_covid_date < .)
+replace cox_ae = 0 if (ae_covid_date > ae_surv_d)
+
+tab cox_ae
+
+gen cox_ae_time = ae_surv_d-study_start
+
+/*
 
 * Censor at death, ons data censor, or 7 days prior to vaccine
 gen stime_death = min(died_date_ons, ons_data_cens, vacc_cens)
@@ -1055,6 +1078,8 @@ bysort comp_death_hosp: summ time_comp_death, d
 format ons_data_date ons_data_cens risk_28_days risk_40_days stime_death stime_comp_death stime_hosp_test stime_icu_test %td
 
 */
+
+format ec_data_date ec_data_cens ae_surv_d %td
 		
 *********************
 *  Label variables  *
@@ -1170,22 +1195,30 @@ label var comorb_cat					"Categorical number of comorbidites"
 	
 * Outcomes and follow-up
 
-/*
+
 
 label var study_start					"Date of study entry"
 label var study_end						"Date of last entry"
+label var cox_pop						"1=Population for Cox analysis"
+label var ec_data_cens					"EC data censor"
+label var died_date_ons					"ONS death date"
+label var cox_ae						"AE outcome for Cox"
+label var cox_ae_time					"AE follow-up time"
+label var ae_pre_cens					"AE covid pre-censor"
+label var ae_time						"AE time from start"
+
+
+/*
+
 label var risk_pop						"1=Population for 28-day risk analysis"
 label var risk_pop_40					"1=Population for 40-day risk analysis"
 label var risk_28						"28-day outcome"
 label var risk_40						"40-day outcome"
-label var cox_pop						"1=Population for Cox analysis"
-label var died_date_ons					"ONS death date"
 label var stime_death					"Date of study exit"
 label var stime_death28					"Date of study exit (28-day censor)"
 label var stime_comp_death				"Date of study exit, discharge as censor"
 label var stime_hosp_test				"Date of exit (hospital admission)"
 label var stime_icu_test				"Date of exit (icu admission)"
-label var cox_death						"Outcome for Cox"
 label var cox_death28					"Outcome for Cox (28-day censor)"
 label var cox_time						"Follow-up time"
 label var cox_time_d					"Time to death"

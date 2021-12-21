@@ -47,7 +47,7 @@ study = StudyDefinition(
        between=["2021-10-03", "2022-01-01"],
        returning="date",
        date_format="YYYY-MM-DD",
-       return_expectations={"date": {"earliest": "2021-10-03", "latest": "2021-12-03"},
+       return_expectations={"date": {"earliest": "2021-10-03", "latest": "today"},
                             "incidence": 0.9
        },
     ), 

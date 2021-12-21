@@ -99,8 +99,8 @@
     "opensafely-diabetes.csv": {
       "id": "opensafely/diabetes/2020-04-15",
       "url": "https://codelists.opensafely.org/codelist/opensafely/diabetes/2020-04-15/",
-      "downloaded_at": "2021-12-03 19:54:33.329046Z",
-      "sha": "605104b3e3770b7ab703d12943f5f15fa8eafe77"
+      "downloaded_at": "2021-12-17 17:18:10.370236Z",
+      "sha": "f2781f0c9a0617b30996d681a798eedd152a09af"
     },
     "opensafely-chronic-kidney-disease.csv": {
       "id": "opensafely/chronic-kidney-disease/2020-04-14",
