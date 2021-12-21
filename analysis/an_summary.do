@@ -72,7 +72,7 @@ foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nom
 			obese4cat region rural_urban5 comorb_cat start_week {
 			
 			noi disp "Table `var'"
-			table `var' sgtf, contents(count patient_id sum ae_pre_cens sum cox_ae mean cox_ae)	
+			table `var' sgtf, contents(count patient_id sum ae_pre_cens sum cox_ae mean cox_ae sum died)	
 			}
 			
 /*

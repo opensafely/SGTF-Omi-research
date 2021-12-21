@@ -963,6 +963,8 @@ gen ae_pre_cens = (ae_covid_date < ec_data_cens)
 gen ae_time = ae_covid_date-study_start if ae_pre_cens == 1
 summ ae_time, d
 
+gen died = (died_date_ons < .)
+
 /*
 
 * 28-day risk indicator
@@ -1206,7 +1208,7 @@ label var cox_ae						"AE outcome for Cox"
 label var cox_ae_time					"AE follow-up time"
 label var ae_pre_cens					"AE covid pre-censor"
 label var ae_time						"AE time from start"
-
+label var died							"Died"
 
 /*
 
