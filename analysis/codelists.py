@@ -29,6 +29,14 @@ covid_identification_in_primary_care_case_codes_seq = codelist_from_csv(
     column="CTV3ID",
 )
 
+snomed_covid = codelist(["1325171000000109", 
+                        "1325181000000106", 
+                        "1325161000000102",
+                        "398447004",
+                        "1240751000000100", 
+                        "840539006"], 
+                system="snomed")
+
 aplastic_codes = codelist_from_csv(
     "codelists/opensafely-aplastic-anaemia.csv", system="ctv3", column="CTV3ID"
 )

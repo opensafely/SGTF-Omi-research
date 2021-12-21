@@ -37,16 +37,6 @@ study = StudyDefinition(
     dereg_date=patients.date_deregistered_from_all_supported_practices(
         on_or_after="2021-11-01", date_format="YYYY-MM",
     ),
-    
-    
-    # OUTCOMES - ONS death dates
-    died_date_ons=patients.died_from_any_cause(
-        on_or_after="2020-02-01",
-        returning="date_of_death",
-        include_month=True,
-        include_day=True,
-        return_expectations={"date": {"earliest": "2021-10-01"}, "incidence" : 0.1},
-    ),
 
 
     ### SGSS positive in study period
@@ -73,7 +63,120 @@ study = StudyDefinition(
             "category": {"ratios": {"0": 0.7, "1": 0.1, "9": 0.1, "": 0.1}},
        },
     ), 
+    
+    
+    ### OUTCOMES - ONS death dates
+    died_date_ons=patients.died_from_any_cause(
+        on_or_after="2020-02-01",
+        returning="date_of_death",
+        include_month=True,
+        include_day=True,
+        return_expectations={"date": {"earliest": "2021-10-01"}, "incidence" : 0.1},
+    ),
+    
+    ### AE ATTENDANCE
+    ae_covid_date=patients.attended_emergency_care(
+        returning= "date_arrived",
+        with_these_diagnoses=snomed_covid,
+        on_or_after="sgss_pos_inrange",
+        find_first_match_in_period=True,  
+        date_format="YYYY-MM-DD",  
+        return_expectations={"date": {"earliest": "2021-10-02"}, "incidence" : 0.2},
+    ),    
 
+    ae_destination=patients.attended_emergency_care(
+        returning= "discharge_destination",
+        with_these_diagnoses=snomed_covid,
+        on_or_after="sgss_pos_inrange",
+        find_first_match_in_period=True,  
+        return_expectations={
+            "rate": "universal",
+            "category": 
+                {"ratios": {
+                    "1": 0.1,
+                    "2": 0.1,
+                    "3": 0.1,
+                    "4": 0.1,
+                    "5": 0.1,
+                    "6": 0.1,
+                    "7": 0.2,
+                    "8": 0.2,
+                }
+            },
+        },
+    ),
+    
+    ae_any_date=patients.attended_emergency_care(
+        returning= "date_arrived",
+        on_or_after="sgss_pos_inrange",
+        find_first_match_in_period=True,  
+        date_format="YYYY-MM-DD",  
+        return_expectations={"date": {"earliest": "2021-10-02"}, "incidence" : 0.3},
+    ),
+
+
+    ### COVID Vaccines
+
+    ## Any covid vaccination
+    vaxdate1=patients.with_tpp_vaccination_record(
+        target_disease_matches="SARS-2 CORONAVIRUS",
+        on_or_after="2020-12-08",
+        find_first_match_in_period=True,
+        returning="date",
+        date_format="YYYY-MM-DD",
+        return_expectations={
+            "date": {"earliest": "2020-12-08", "latest": "today"},
+            "incidence": 0.8
+        },
+    ),
+    vaxdate2=patients.with_tpp_vaccination_record(
+        target_disease_matches="SARS-2 CORONAVIRUS",
+        on_or_after="vaxdate1 + 1 day",
+        find_first_match_in_period=True,
+        returning="date",
+        date_format="YYYY-MM-DD",
+        return_expectations={
+            "date": {"earliest": "2021-01-08", "latest" : "today"},
+            "incidence": 0.7
+        },
+    ),
+    vaxdate3=patients.with_tpp_vaccination_record(
+        target_disease_matches="SARS-2 CORONAVIRUS",
+        on_or_after="vaxdate2 + 1 day",
+        find_first_match_in_period=True,
+        returning="date",
+        date_format="YYYY-MM-DD",
+         return_expectations={
+            "date": {"earliest": "2021-02-08", "latest" : "today"},
+            "incidence": 0.5
+        },
+    ),
+    
+    ### COVID infections
+    
+    # Primary care
+    last_covid_tpp_probable=patients.with_these_clinical_events(
+        combine_codelists(covid_identification_in_primary_care_case_codes_clinical,
+                          covid_identification_in_primary_care_case_codes_test,
+                          covid_identification_in_primary_care_case_codes_seq),
+        return_last_date_in_period=True,
+        between=["2020-08-01", "sgss_pos_inrange - 7 days"],
+        include_day=True,
+        return_expectations={"date": {"earliest": "2020-11-01"}, "incidence" : 0.2},
+    ),
+    
+    # SGSS
+    last_pos_test_sgss=patients.with_test_result_in_sgss(
+        pathogen="SARS-CoV-2",
+        test_result="positive",
+        find_last_match_in_period=True,
+        returning="date",
+        between=["2020-08-01", "sgss_pos_inrange - 1 days"],       
+        date_format="YYYY-MM-DD",
+        return_expectations={"date": {"earliest": "2020-11-01"},
+                            "incidence": 0.1
+        },
+    ), 
 
     ### DEMOGRAPHIC COVARIATES
     # AGE
