@@ -29,9 +29,6 @@ log using ./logs/an_summary, replace t
 
 clear
 
-/*
-use "C:\Users\EIDEDGRI\Documents\GitHub\SGTF-CFR-research\output\cr_analysis_dataset.dta"
-*/
 
 use ./output/main.dta
 
@@ -53,26 +50,14 @@ noi di "DROPPING NO SGTF DATA"
 drop if has_sgtf==0
 
 
-/*
-
-* Tabulate number of deaths by SGTF and covariates
-
-foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nomiss smoke_nomiss2 ///
-			obese4cat hh_total_cat home_bin region rural_urban5 comorb_cat start_week {
 			
-			noi disp "Table `var'"
-			table `var' sgtf, contents(count patient_id sum risk_28 mean risk_28 sum cox_death)	
-			}
-
-*/
-			
-* Tabulate number of AE admissions by SGTF and covariates
+* Tabulate number of AE admissions and deaths by SGTF and covariates
 
 foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nomiss smoke_nomiss2 ///
 			obese4cat region rural_urban5 comorb_cat start_week {
 			
 			noi disp "Table `var'"
-			table `var' sgtf, contents(count patient_id sum ae_pre_cens sum cox_ae mean cox_ae sum died)	
+			table `var' sgtf, contents(count patient_id sum any_ae sum cox_ae mean cox_ae sum died)	
 			}
 			
 /*

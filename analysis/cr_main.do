@@ -609,7 +609,9 @@ foreach var of varlist	chronic_respiratory_disease_date 	///
 *  Epidemiological week  *
 **************************
 
-gen start_week = 50 if study_start <= date("18dec2021", "DMY")
+gen start_week = 52 if study_start <= date("01jan2022", "DMY")
+replace start_week = 51 if study_start <= date("25dec2021", "DMY")
+replace start_week = 50 if study_start <= date("18dec2021", "DMY")
 replace start_week = 49 if study_start <= date("11dec2021", "DMY")
 replace start_week = 48 if study_start <= date("04dec2021", "DMY")
 replace start_week = 47 if study_start <= date("27nov2021", "DMY")
@@ -633,7 +635,9 @@ label define start_weekLab	40 "03Oct-09Oct" ///
 							47 "21Nov-27Nov" ///
 							48 "28Nov-04Dec" ///
 							49 "05Dec-11Dec" ///
-							50 "12Dec-18Dec"
+							50 "12Dec-18Dec" ///
+							51 "19Dec-25Dec" ///
+							52 "26Dec-01Jan"
 
 							
 label values start_week start_weekLab
@@ -934,7 +938,7 @@ tab comorb_cat, m
 /*  28-day risk censoring dates  */
 
 noi di "REMEMBER TO UPDATE DATE OF EC DATA UPLOAD"
-gen ec_data_date = date("17dec2021", "DMY")
+gen ec_data_date = date("31dec2021", "DMY")
 gen ec_data_cens = ec_data_date-7				// Censor AE data 1 week prior to data upload
 
 /*
@@ -963,6 +967,7 @@ gen ae_pre_cens = (ae_covid_date < ec_data_cens)
 gen ae_time = ae_covid_date-study_start if ae_pre_cens == 1
 summ ae_time, d
 
+gen any_ae = (ae_covid_date < .)
 gen died = (died_date_ons < .)
 
 /*
@@ -1206,6 +1211,7 @@ label var ec_data_cens					"EC data censor"
 label var died_date_ons					"ONS death date"
 label var cox_ae						"AE outcome for Cox"
 label var cox_ae_time					"AE follow-up time"
+label var any_ae						"AE covid any time"
 label var ae_pre_cens					"AE covid pre-censor"
 label var ae_time						"AE time from start"
 label var died							"Died"
