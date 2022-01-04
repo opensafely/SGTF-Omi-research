@@ -394,11 +394,11 @@ recode age 	0/39.9999=0 ///
 			75/84.9999 = 4 ///
 			85/max = 5, gen(agegroup6) 
 
-label define agegroup6Lab 	0 "0-<40" ///
-							1 "40-<55" ///
-							2 "55-<65" ///
-							3 "65-<75" ///
-							4 "75-<85" ///
+label define agegroup6Lab 	0 "0-39" ///
+							1 "40-54" ///
+							2 "55-64" ///
+							3 "65-74" ///
+							4 "75-84" ///
 							5 "85+"
 							
 label values agegroup6 agegroup6Lab
