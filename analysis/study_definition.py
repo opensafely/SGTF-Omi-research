@@ -131,7 +131,7 @@ study = StudyDefinition(
     ),
     vaxdate2=patients.with_tpp_vaccination_record(
         target_disease_matches="SARS-2 CORONAVIRUS",
-        on_or_after="vaxdate1 + 1 day",
+        on_or_after="vaxdate1 + 7 days",
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
@@ -142,7 +142,7 @@ study = StudyDefinition(
     ),
     vaxdate3=patients.with_tpp_vaccination_record(
         target_disease_matches="SARS-2 CORONAVIRUS",
-        on_or_after="vaxdate2 + 1 day",
+        on_or_after="vaxdate2 + 7 days",
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
@@ -171,7 +171,7 @@ study = StudyDefinition(
         test_result="positive",
         find_last_match_in_period=True,
         returning="date",
-        between=["2020-08-01", "sgss_pos_inrange - 1 days"],       
+        between=["2020-08-01", "sgss_pos_inrange - 7 days"],       
         date_format="YYYY-MM-DD",
         return_expectations={"date": {"earliest": "2020-11-01"},
                             "incidence": 0.1

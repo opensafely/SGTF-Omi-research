@@ -54,12 +54,18 @@ drop if has_sgtf==0
 * Tabulate number of AE admissions and deaths by SGTF and covariates
 
 foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nomiss smoke_nomiss2 ///
-			obese4cat region rural_urban5 comorb_cat start_week {
+			obese4cat hh_total_cat home_bin region rural_urban5 comorb_cat start_week vax prev_inf {
 			
 			noi disp "Table `var'"
 			table `var' sgtf, contents(count patient_id sum any_ae sum cox_ae mean cox_ae sum died)	
 			}
 			
+			
+* Tabulate outcomes by vaccination/prior infection interaction
+
+noi disp "Table of vaccination/prior infection interaction"
+bysort sgtf: table vax prev_inf, contents(count patient_id sum any_ae sum cox_ae sum died)
+
 /*
 			
 * Tabulate number of ICU admissions by SGTF and covariates
@@ -119,24 +125,13 @@ save "C:\Users\EIDEDGRI\Documents\GitHub\SGTF-CFR-research\lookups\VOC_Data_Engl
 * Drop if unknown SGTF
 drop if !inrange(sgtf,0,1)
 
-* Calculate % SGTF by week
-collapse (mean) sgtf (count) patient_id, by(start_week)
-
-* Display percentage of positive tests with SGTF
-list
 
 * Calculate % SGTF by week and region
-*collapse (mean) sgtf (count) patient_id, by(region start_week)
+collapse (mean) sgtf (count) patient_id, by(region start_week)
 
 gen os_sgtf = sgtf*100
 rename patient_id os_n
 
-summ os_sgtf if start_week <= 44
-
-* Save mean + 2SD SGTF number of cases to local
-
-global p_sgtf = r(mean) // +(2*r(sd))
-disp $p_sgtf
 
 * Merge on PHE data
 /*
@@ -155,22 +150,23 @@ format week_date %td
 *label define epi_week	1 "01Nov" 2 "07Nov" 3 "14Nov" 4 "21Nov" 5 "28Nov"
 *label values start_week epi_week
 
-
+/*
 line os_sgtf start_week, ///
 	ytitle("% of positive tests with SGTF") ///
 	xlabel(40(2)50, valuelabel angle(45)) ///
 	yline($p_sgtf)
 graph export ./output/sgtf_perc.svg, as(svg) replace
 graph export ./output/sgtf_perc.pdf, as(pdf) replace
+*/
 
-/*
+drop if !inrange(start_week,48,52)
+
 line os_sgtf start_week, by(region) ///
 	ytitle("% of positive tests with SGTF") ///
-	xlabel(40(2)48, valuelabel) ///
-	legend(label(1 "TPP"))
+	xlabel(48(1)52, valuelabel angle(45))
 graph export ./output/sgtf_perc_region.svg, as(svg) replace
 graph export ./output/sgtf_perc_region.pdf, as(pdf) replace
-*/
+
 
 log close
 

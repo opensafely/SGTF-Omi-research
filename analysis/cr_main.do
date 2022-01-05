@@ -138,6 +138,31 @@ foreach var of varlist 	dereg_date died_date_ons ae_covid_date ae_any_date vaxda
 		format %d `var'
 }
 
+
+***************************************************
+*  Define vaccination and prior infection status  *
+***************************************************
+
+gen vax = 0
+replace vax = 1 if (vaxdate1+14) < study_start	// First dose >14-days prior to infection
+replace vax = 2 if (vaxdate2+14) < study_start	// Second dose >14-days prior to infection
+replace vax = 3 if (vaxdate3+14) < study_start	// Booster >14-days prior to infection
+
+label define vaxLab 0 "Unvax" 1 "First dose" 2 "Second dose" 3 "Booster"
+label values vax vaxLab
+
+tab vax, m
+tab vax sgtf if has_sgtf == 1, m col
+
+gen prev_inf = 0
+replace prev_inf = 1 if last_covid_tpp_probable < study_start
+replace prev_inf = 1 if last_pos_test_sgss < study_start
+
+label define prev_infLab 0 "None" 1 "Prior inf."
+label values prev_inf prev_infLab
+
+tab prev_inf, m
+tab prev_inf sgtf if has_sgtf == 1, m col
  
 *******************************
 *  Recode implausible values  *
@@ -518,7 +543,7 @@ drop if imd>=.
 
 
 /*  HOUSEHOLD SIZE  */
-/*
+
 gen hh_total_cat=.
 replace hh_total_cat=1 if household_size >=1 & household_size<=2
 replace hh_total_cat=2 if household_size >=3 & household_size<=5
@@ -533,7 +558,7 @@ label define hh_total_catLab	1 "1-2" ///
 label values hh_total_cat hh_total_catLab
 
 tab hh_total_cat, m
-*/
+
 
 /*  RURAL OR URBAN  */
 
@@ -556,7 +581,7 @@ tab rural_urban5, m
 
 
 /*  CARE HOME TYPE  */
-/*
+
 tab care_home_type, m
 
 gen home_bin=0
@@ -568,7 +593,7 @@ label define home_binLab	0 "Private home" ///
 							1 "Care home"
 
 label values home_bin home_binLab
-*/
+
 
 /*  Centred age, sex, IMD, ethnicity (for adjusted KM plots)  */ 
 
@@ -1130,9 +1155,9 @@ label var rural_urban					"Rural urban classification"
 label var rural_urban5					"Rural Urban in five categories"
 
 *label var household_size				"Household size"
-*label var hh_total_cat					"Categorical household size"
+label var hh_total_cat					"Categorical household size"
 *label var care_home_type				"Care home status"
-*label var home_bin						"Binary care home status"
+label var home_bin						"Binary care home status"
 
 /*
 label var hba1ccat						"Categorised hba1c"
@@ -1248,6 +1273,9 @@ label var hosp_28						"28-day hospitalisation outcome"
 
 label var sgtf							"SGTF (exposure)"
 label var has_sgtf						"1=Has SGTF data"
+
+label var vax							"Vaccination status"
+label var prev_inf						"Prior infection status"
 
 /*
 label var covid_admission_date			"Date of hospital admission" 
