@@ -43,3 +43,15 @@ actions:
         figure4: output/ae_hist.svg
         figure5: output/ae_kden.svg
 
+  anCOX:
+    run: stata-mp:latest analysis/an_cox.do
+    needs: [crMAIN]
+    outputs:
+      moderately_sensitive:
+        log: logs/an_cox.log
+        figure1: output/cox_shoen.svg
+        figure2: output/cox_km.svg
+        figure3: output/cox_cumhaz.svg  
+        figure4: output/cox_haz.svg
+        table1text: output/table2.txt
+        table1xlsx: output/table2.xlsx

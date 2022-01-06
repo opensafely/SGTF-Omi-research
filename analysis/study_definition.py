@@ -47,7 +47,7 @@ study = StudyDefinition(
        between=["2021-10-03", "2022-01-01"],
        returning="date",
        date_format="YYYY-MM-DD",
-       return_expectations={"date": {"earliest": "2021-10-03", "latest": "today"},
+       return_expectations={"date": {"earliest": "2021-12-05", "latest": "today"},
                             "incidence": 0.9
        },
     ), 
@@ -71,7 +71,7 @@ study = StudyDefinition(
         returning="date_of_death",
         include_month=True,
         include_day=True,
-        return_expectations={"date": {"earliest": "2021-10-01"}, "incidence" : 0.1},
+        return_expectations={"date": {"earliest": "2021-12-05"}, "incidence" : 0.1},
     ),
     
     ### AE ATTENDANCE
@@ -81,7 +81,7 @@ study = StudyDefinition(
         on_or_after="sgss_pos_inrange",
         find_first_match_in_period=True,  
         date_format="YYYY-MM-DD",  
-        return_expectations={"date": {"earliest": "2021-10-02"}, "incidence" : 0.2},
+        return_expectations={"date": {"earliest": "2021-12-05"}, "incidence" : 0.2},
     ),    
 
     ae_destination=patients.attended_emergency_care(
@@ -111,7 +111,7 @@ study = StudyDefinition(
         on_or_after="sgss_pos_inrange",
         find_first_match_in_period=True,  
         date_format="YYYY-MM-DD",  
-        return_expectations={"date": {"earliest": "2021-10-02"}, "incidence" : 0.3},
+        return_expectations={"date": {"earliest": "2021-12-05"}, "incidence" : 0.3},
     ),
 
 
