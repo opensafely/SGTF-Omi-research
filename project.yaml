@@ -55,3 +55,21 @@ actions:
         figure4: output/cox_haz.svg
         table1text: output/table2.txt
         table1xlsx: output/table2.xlsx
+        
+  crIMP:
+    run: stata-mp:latest analysis/cr_imputed.do
+    needs: [crMAIN]
+    outputs:
+      moderately_sensitive:
+        log: logs/cr_imputed.log
+      highly_sensitive:
+        data: output/main_imputed.dta
+        
+  anCOX_IMP:
+    run: stata-mp:latest analysis/an_cox_imputed.do
+    needs: [crIMP]
+    outputs:
+      moderately_sensitive:
+        log: logs/an_cox_imputed.log
+      highly_sensitive:
+        data2: output/an_imputed_eth2.ster
