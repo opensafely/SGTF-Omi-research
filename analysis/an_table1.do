@@ -262,6 +262,10 @@ file write tablecontent _n
 tabulatevariable, variable(agegroup6) min(0) max(5) 
 file write tablecontent _n 
 
+*VACCINATION STATUS
+tabulatevariable, variable(vax) min(0) max(3) 
+file write tablecontent _n 
+
 *ETHNICITY
 tabulatevariable, variable(eth5) min(1) max(6) 
 file write tablecontent _n 
