@@ -28,3 +28,18 @@ actions:
         log: logs/an_summary.log
         figure1: output/sgtf_perc_region.svg
         figure2: output/sgtf_perc_region.pdf
+        
+  anTAB1:
+    run: stata-mp:latest analysis/an_table1.do
+    needs: [crMAIN]
+    outputs:
+      moderately_sensitive:
+        log: logs/an_table1.log
+        table1text: output/table1.txt
+        table1xlsx: output/table1.xlsx
+        figure1: output/time_ae_hist.svg
+        figure2: output/date_ae_hist.svg
+        figure3: output/date_ae_hist1.svg
+        figure4: output/ae_hist.svg
+        figure5: output/ae_kden.svg
+
