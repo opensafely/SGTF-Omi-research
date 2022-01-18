@@ -70,7 +70,8 @@ bysort sgtf: table vax prev_inf, contents(count patient_id sum any_ae sum cox_ae
 * Tabulate AE destination by SGTF
 
 noi disp "Table of AE destinations"
-tab ae_destination sgtf, m
+tab ae_dest sgtf, m
+tab ae_admit sgtf, m
 
 /*
 			

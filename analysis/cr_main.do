@@ -1004,6 +1004,13 @@ replace ae_dest = "Transfer/hospice" if inlist(ae_destination,1066351000000102,1
 replace ae_dest = "Mortuary" if inlist(ae_destination,305398007)
 
 tab ae_destination ae_dest if all_ae == 1, m
+tab ae_destination ae_dest if any_ae == 1, m
+
+
+gen ae_admit = 0 if !missing(ae_dest)
+replace ae_admit = 1 if ae_dest == "Admitted"
+
+tab ae_admit
 
 /*
 
@@ -1037,6 +1044,8 @@ replace cox_ae = 0 if (ae_covid_date > ae_surv_d)
 tab cox_ae
 
 gen cox_ae_time = ae_surv_d-study_start
+
+tab ae_destination ae_dest if cox_ae == 1, m
 
 /*
 
@@ -1254,6 +1263,7 @@ label var ae_time						"AE time from start"
 label var all_ae						"All cause AE"
 label var ae_destination				"AE Destination (numeric)"
 label var ae_dest						"AE Destination"
+label var ae_admit						"Binary AE admission destination"
 label var died							"Died"
 
 /*
