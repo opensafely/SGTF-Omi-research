@@ -993,7 +993,10 @@ gen ae_time = ae_covid_date-study_start if ae_pre_cens == 1
 summ ae_time, d
 
 gen any_ae = (ae_covid_date < .)
+gen all_ae = (ae_any_date < .)
 gen died = (died_date_ons < .)
+
+tab ae_destination if all_ae == 1
 
 /*
 
@@ -1241,6 +1244,8 @@ label var cox_ae_time					"Cox follow-up time"
 label var any_ae						"AE covid any time"
 label var ae_pre_cens					"AE covid pre-censor"
 label var ae_time						"AE time from start"
+label var all_ae						"All cause AE"
+label var ae_destination				"AE Destination"
 label var died							"Died"
 
 /*

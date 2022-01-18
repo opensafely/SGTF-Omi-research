@@ -57,7 +57,7 @@ foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nom
 			obese4cat hh_total_cat home_bin region rural_urban5 comorb_cat start_week vax prev_inf {
 			
 			noi disp "Table `var'"
-			table `var' sgtf, contents(count patient_id sum any_ae sum cox_ae mean cox_ae sum died)	
+			table `var' sgtf, contents(count patient_id sum all_ae sum any_ae sum cox_ae sum died)	
 			}
 			
 			
@@ -65,6 +65,12 @@ foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nom
 
 noi disp "Table of vaccination/prior infection interaction"
 bysort sgtf: table vax prev_inf, contents(count patient_id sum any_ae sum cox_ae sum died)
+
+
+* Tabulate AE destination by SGTF
+
+noi disp "Table of AE destinations"
+tab ae_destination sgtf, m
 
 /*
 			

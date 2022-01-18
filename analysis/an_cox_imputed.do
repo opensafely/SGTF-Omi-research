@@ -51,7 +51,7 @@ mi stset ae_surv_d, origin(study_start) fail(cox_ae) scale(1) id(patient_id)
 
 * Stratified by region
 mi estimate, eform: stcox i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
-			 ib1.rural_urban5 ib0.comorb_cat ib1.start_week age1 age2 age3 i.home_bin ///
+			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week age1 age2 age3 i.home_bin ///
 			 , strata(utla_group)
 			 
 estimates save ./output/an_imputed_eth2, replace
