@@ -996,7 +996,14 @@ gen any_ae = (ae_covid_date < .)
 gen all_ae = (ae_any_date < .)
 gen died = (died_date_ons < .)
 
-tab ae_destination if all_ae == 1
+gen ae_dest = "Home" if inlist(ae_destination,306689006,306691003,306694006)
+replace ae_dest = "Police/legal" if inlist(ae_destination,306705005,50861005)
+replace ae_dest = "Admitted" if inlist(ae_destination,306706006,1066371000000106,1066391000000105,1066341000000100,1066361000000104,1066331000000109)
+replace ae_dest = "Baby unit" if inlist(ae_destination,1066401000000108,1066381000000108)
+replace ae_dest = "Transfer/hospice" if inlist(ae_destination,1066351000000102,183919006,19712007)
+replace ae_dest = "Mortuary" if inlist(ae_destination,305398007)
+
+tab ae_destination ae_dest if all_ae == 1, m
 
 /*
 
@@ -1245,7 +1252,8 @@ label var any_ae						"AE covid any time"
 label var ae_pre_cens					"AE covid pre-censor"
 label var ae_time						"AE time from start"
 label var all_ae						"All cause AE"
-label var ae_destination				"AE Destination"
+label var ae_destination				"AE Destination (numeric)"
+label var ae_dest						"AE Destination"
 label var died							"Died"
 
 /*
