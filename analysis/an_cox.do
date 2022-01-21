@@ -199,18 +199,8 @@ graph export ./output/cox_haz.svg, as(svg) replace
 /* Subgroup analyses */
 ***********************
 
-/*
-
 * Epi week
-stcox i.sgtf i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
-			 ib1.rural_urban5 ib0.comorb_cat ib2.start_weekA age1 age2 age3 i.home_bin ///
-			 if eth2 != 6 ///
-			 , strata(utla_group)
-			 
-est store e_week
-
-
-stcox i.sgtf##ib2.start_weekA i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+stcox i.sgtf##ib49.start_week ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
 			 ib1.rural_urban5 ib0.comorb_cat age1 age2 age3 i.home_bin ///
 			 if eth2 != 6 ///
 			 , strata(utla_group)
@@ -218,49 +208,66 @@ stcox i.sgtf##ib2.start_weekA i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obes
 est store e_weekX
 
 * Test for interaction
-lrtest e_week e_weekX
+lrtest e_no_int e_weekX
 
 file write tablecontent _n ("Subgroup analyses") _n 
 
 file write tablecontent _n ("Epi. week") _tab _tab %6.4f (r(p)) _n
 
-* Epi week VOC vs. non-VOC HR
-lincom 1.sgtf + 1.sgtf#2.start_weekA, eform	// week 1/2
-file write tablecontent ("16Nov-29Nov") _tab 
+* Epi week Omicron vs. Delta HR
+lincom 1.sgtf, eform	// week 49
+file write tablecontent ("05Dec-11Dec") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-lincom 1.sgtf + 1.sgtf#3.start_weekA, eform	// week 3
-file write tablecontent ("30Nov-06Dec") _tab 
+lincom 1.sgtf + 1.sgtf#50.start_week, eform	// week 50
+file write tablecontent ("12Dec-18Dec") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-lincom 1.sgtf + 1.sgtf#4.start_weekA, eform	// week 4
-file write tablecontent ("07Dec-13Dec") _tab 
+lincom 1.sgtf + 1.sgtf#51.start_week, eform	// week 51
+file write tablecontent ("19Dec-25Dec") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-lincom 1.sgtf + 1.sgtf#5.start_weekA, eform	// week 5
-file write tablecontent ("14Dec-20Dec") _tab 
+lincom 1.sgtf + 1.sgtf#52.start_week, eform	// week 52
+file write tablecontent ("26Dec-01Jan") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-lincom 1.sgtf + 1.sgtf#6.start_weekA, eform	// week 6
-file write tablecontent ("21Dec-27Dec") _tab 
-file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
-
-lincom 1.sgtf + 1.sgtf#7.start_weekA, eform	// week 7
-file write tablecontent ("28Dec-03Jan") _tab 
-file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
-
-lincom 1.sgtf + 1.sgtf#8.start_weekA, eform	// week 8
-file write tablecontent ("04Jan-11Jan") _tab 
-file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
 
 * Vaccination status
+stcox i.sgtf##ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week age1 age2 age3 i.home_bin ///
+			 if eth2 != 6 ///
+			 , strata(utla_group)
+
+est store e_vaxX
+
+* Test for interaction
+lrtest e_no_int e_vaxX
+
+file write tablecontent _n ("Vaccination") _tab _tab %6.4f (r(p)) _n
+
+* Vax status Omicron vs. Delta HR
+lincom 1.sgtf + 1.sgtf#0.vax, eform			// unvax
+file write tablecontent ("Unvax") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+
+lincom 1.sgtf + 1.sgtf#1.vax, eform			// 1 dose
+file write tablecontent ("1 dose") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+
+lincom 1.sgtf, eform						// 2 doses
+file write tablecontent ("2 doses") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+
+lincom 1.sgtf + 1.sgtf#3.vax, eform			// booster
+file write tablecontent ("Booster") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
 
 
 * Comorbidities
-stcox i.sgtf##ib0.comorb_cat i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
-			 ib1.rural_urban5 ib1.start_week age1 age2 age3 i.home_bin ///
+stcox i.sgtf##ib0.comorb_cat ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib49.start_week age1 age2 age3 i.home_bin ///
 			 if eth2 != 6 ///
 			 , strata(utla_group)
 
@@ -284,6 +291,7 @@ lincom 1.sgtf + 1.sgtf#2.comorb_cat, eform	// 2+ comorbs
 file write tablecontent ("2+") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
+/*
 * Test for trend
 stcox i.sgtf i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
 			 ib1.rural_urban5 c.comorb_cat ib1.start_week age1 age2 age3 i.home_bin ///
@@ -468,6 +476,38 @@ tab sgtf cox_ae if e(sample)
 lincom 1.sgtf, eform
 file write tablecontent ("Exluding ethnicity") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+
+
+**************************
+/* Admission as outcome */
+**************************
+
+stset ae_surv_d, origin(study_start) fail(cox_admit) scale(1) id(patient_id)
+
+* Stratified by UTLA
+* Excluding missing ethnicity
+
+stcox i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week age1 age2 age3 i.home_bin ///
+			 if eth2 != 6 ///
+			 , strata(utla_group)
+
+* N (events)
+tab sgtf cox_admit if e(sample)
+bysort vax: tab sgtf cox_admit if e(sample)
+bysort start_week: tab sgtf cox_admit if e(sample)
+bysort comorb_cat: tab sgtf cox_admit if e(sample)
+bysort eth2: tab sgtf cox_admit if e(sample)
+bysort imd: tab sgtf cox_admit if e(sample)
+bysort agegroup6: tab sgtf cox_admit if e(sample)
+
+estat phtest, d
+
+
+lincom 1.sgtf, eform
+file write tablecontent ("Fully adj. Admission") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+
 
 /*
 

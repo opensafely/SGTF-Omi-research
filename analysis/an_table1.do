@@ -235,6 +235,10 @@ file write tablecontent _n
 tabulatevariable, variable(cox_ae) min(0) max(1) 
 file write tablecontent _n
 
+*COX AE ADMISSION
+tabulatevariable, variable(cox_admit) min(0) max(1) 
+file write tablecontent _n
+
 *DIED
 tabulatevariable, variable(died) min(0) max(1) 
 file write tablecontent _n

@@ -1041,7 +1041,12 @@ gen ae_surv_d = min(ae_covid_date, died_date_ons, ec_data_cens)
 gen cox_ae = (ae_covid_date < .)
 replace cox_ae = 0 if (ae_covid_date > ae_surv_d)
 
-tab cox_ae
+tab cox_ae, m
+
+gen cox_admit = cox_ae
+replace cox_admit = 0 if ae_admit != 1
+
+tab cox_admit, m
 
 gen cox_ae_time = ae_surv_d-study_start
 
@@ -1256,6 +1261,7 @@ label var ae_covid_date					"Raw date of AE"
 label var died_date_ons					"ONS death date"
 label var ae_surv_d						"Cox survival time date"
 label var cox_ae						"AE outcome for Cox"
+label var cox_admit						"AE admission outcome for Cox"
 label var cox_ae_time					"Cox follow-up time"
 label var any_ae						"AE covid any time"
 label var ae_pre_cens					"AE covid pre-censor"
