@@ -960,10 +960,10 @@ tab comorb_cat, m
 *  Outcomes and survival time  *
 ********************************
 
-/*  28-day risk censoring dates  */
+/*  Censoring dates  */
 
 noi di "REMEMBER TO UPDATE DATE OF EC DATA UPLOAD"
-gen ec_data_date = date("31dec2021", "DMY")
+gen ec_data_date = date("21jan2022", "DMY")
 gen ec_data_cens = ec_data_date-7				// Censor AE data 1 week prior to data upload
 
 /*
