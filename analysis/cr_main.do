@@ -1040,6 +1040,7 @@ gen cox_pop = (study_start < ec_data_cens)			// Include if data before EC data c
 
 * Censor at death or EC data censor
 gen ae_surv_d = min(ae_covid_date, died_date_ons, ec_data_cens)
+gen ae_surv_d1 = ae_surv_d+1
 
 gen cox_ae = (ae_covid_date < .)
 replace cox_ae = 0 if (ae_covid_date > ae_surv_d)
@@ -1263,6 +1264,7 @@ label var ec_data_cens					"EC data censor"
 label var ae_covid_date					"Raw date of AE"
 label var died_date_ons					"ONS death date"
 label var ae_surv_d						"Cox survival time date"
+label var ae_surv_d1					"Cox survival time date plus 1 day"
 label var cox_ae						"AE outcome for Cox"
 label var cox_admit						"AE admission outcome for Cox"
 label var cox_ae_time					"Cox follow-up time"
