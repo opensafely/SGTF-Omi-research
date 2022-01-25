@@ -314,11 +314,12 @@ lincom 1.sgtf#c.comorb_cat, eform
 file write tablecontent ("Per unit increase") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (`lin_lr_p') _n
 
+*/
 
 
 * Ethnicity
-stcox i.sgtf##ib1.eth2 i.male ib1.imd ib0.comorb_cat ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
-			 ib1.rural_urban5 ib1.start_week age1 age2 age3 i.home_bin ///
+stcox i.sgtf##ib1.eth2 ib2.vax i.male ib1.imd ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week age1 age2 age3 i.home_bin ///
 			 if eth2 != 6 ///
 			 , strata(utla_group)
 
@@ -334,16 +335,12 @@ lincom 1.sgtf, eform					// White
 file write tablecontent ("White") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-*lincom 1.sgtf + 1.sgtf#2.eth5, eform	// S Asian
-*lincom 1.sgtf + 1.sgtf#3.eth5, eform	// Black
-*lincom 1.sgtf + 1.sgtf#4.eth5, eform	// Mixed
 lincom 1.sgtf + 1.sgtf#5.eth2, eform	// Other
 file write tablecontent ("Not white") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-*lincom 1.sgtf + 1.sgtf#6.eth2, eform	// Missing
 
-
+/*
 
 * IMD
 stcox i.sgtf##ib1.imd i.male ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
@@ -379,18 +376,21 @@ lincom 1.sgtf + 1.sgtf#5.imd, eform	// 5
 file write tablecontent ("5 Most deprived") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-
+*/
 
 * Age group
-stcox i.sgtf ib2.agegroupA i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
-			 ib1.rural_urban5 ib0.comorb_cat ib1.start_week i.home_bin ///
+stcox i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week ib0.agegroup6 i.home_bin ///
 			 if eth2 != 6 ///
 			 , strata(utla_group)
 			 
 est store e_age
 
-stcox i.sgtf##ib2.agegroupA i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
-			 ib1.rural_urban5 ib0.comorb_cat ib1.start_week i.home_bin ///
+* N (events)
+tab sgtf agegroup6 if e(sample)
+
+stcox i.sgtf##ib0.agegroup6 ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week i.home_bin ///
 			 if eth2 != 6 ///
 			 , strata(utla_group)
 			 
@@ -402,22 +402,31 @@ lrtest e_age e_ageX
 file write tablecontent _n ("Age group") _tab _tab %6.4f (r(p)) _n
 
 * Age group VOC vs. non-VOC HR
-lincom 1.sgtf + 1.sgtf#1.agegroupA, eform	// 0-<65
-file write tablecontent ("0-<65") _tab 
+lincom 1.sgtf, eform						// 0-39
+file write tablecontent ("0-39") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-lincom 1.sgtf + 1.sgtf#2.agegroupA, eform	// 65-<75
-file write tablecontent ("65-<75") _tab 
+lincom 1.sgtf + 1.sgtf#1.agegroup6, eform	// 40-54
+file write tablecontent ("40-54") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-lincom 1.sgtf + 1.sgtf#3.agegroupA, eform	// 75-<85
-file write tablecontent ("75-<85") _tab 
+lincom 1.sgtf + 1.sgtf#2.agegroup6, eform	// 55-64
+file write tablecontent ("55-64") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
-lincom 1.sgtf + 1.sgtf#4.agegroupA, eform	// 85+
+lincom 1.sgtf + 1.sgtf#3.agegroup6, eform	// 65-74
+file write tablecontent ("65-74") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+
+lincom 1.sgtf + 1.sgtf#4.agegroup6, eform	// 75-84
+file write tablecontent ("75-84") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+
+lincom 1.sgtf + 1.sgtf#5.agegroup6, eform	// 85+
 file write tablecontent ("85+") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
+/*
 
 * Test for trend
 stcox i.sgtf c.agegroupA i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
@@ -461,7 +470,7 @@ stcox i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1
 tab sgtf cox_ae if e(sample)
 			 
 lincom 1.sgtf, eform
-file write tablecontent ("Exluding care home") _tab 
+file write tablecontent ("Excluding care home") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
 * Excluding ethnicity
@@ -474,9 +483,23 @@ stcox i.sgtf ib2.vax i.male ib1.imd ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total
 tab sgtf cox_ae if e(sample)
 			 
 lincom 1.sgtf, eform
-file write tablecontent ("Exluding ethnicity") _tab 
+file write tablecontent ("Excluding ethnicity") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
+* Min 14-days pre-EC data censor
+
+stcox i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week age1 age2 age3 i.home_bin ///
+			 if ae_14_pop == 1 & eth2 != 6 ///
+			 , strata(utla_group)
+			 
+* N (events)
+tab sgtf cox_ae if e(sample)
+			 
+lincom 1.sgtf, eform
+file write tablecontent ("Min 14-days FU") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+			 
 
 **************************
 /* Admission as outcome */

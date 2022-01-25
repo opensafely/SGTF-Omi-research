@@ -966,6 +966,9 @@ noi di "REMEMBER TO UPDATE DATE OF EC DATA UPLOAD"
 gen ec_data_date = date("21jan2022", "DMY")
 gen ec_data_cens = ec_data_date-7				// Censor AE data 1 week prior to data upload
 
+gen risk_14_days = study_start+14
+gen ae_14_pop = (risk_14_days <= ec_data_cens)	// Indicator for has 14-days follow-up
+
 /*
 
 noi di "REMEMBER TO UPDATE DATE OF ONS DATA UPLOAD"
@@ -1271,6 +1274,8 @@ label var ae_destination				"AE Destination (numeric)"
 label var ae_dest						"AE Destination"
 label var ae_admit						"Binary AE admission destination"
 label var died							"Died"
+
+label var ae_14_pop						"1=Population for 14-day follow-up"
 
 /*
 
