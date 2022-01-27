@@ -43,7 +43,7 @@ noi di "SUBSETTING ON START/STOP DATES"
 keep if inrange(start_week,49,52)
 
 tab sgtf cox_ae, row
-
+tab sgtf cox_ae if ae_surv_d > study_start, row
 
 * Declare survival data
 mi stset ae_surv_d, origin(study_start) fail(cox_ae) scale(1) id(patient_id)
