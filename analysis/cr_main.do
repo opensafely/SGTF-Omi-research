@@ -428,6 +428,17 @@ label define agegroup6Lab 	0 "0-39" ///
 							
 label values agegroup6 agegroup6Lab
 
+recode age 	0/39.9999=0 ///
+			40/69.9999 = 1 /// 
+		    70/max = 2, gen(agegroup3)
+			
+label define agegroup3Lab 	0 "0-39" ///
+							1 "40-69" ///
+							2 "70+"
+							
+label values agegroup3 agegroup3Lab
+
+
 * Create binary age
 recode age min/69.999=0 70/max=1, gen(age70)
 
@@ -1099,6 +1110,7 @@ label var agegroup						"Grouped age"
 label var agegroupA						"Age subgroups"
 label var agegroupB						"Age subgroups"
 label var agegroup6						"Six age groups"
+label var agegroup3						"Three age groups"
 label var age70 						"70 years and older"
 label var age1 							"Age65 spline 1"
 label var age2 							"Age65 spline 2"
