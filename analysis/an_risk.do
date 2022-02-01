@@ -66,13 +66,33 @@ glm cox_ae14 i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4
 			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week age1 age2 age3 i.home_bin ///
 			 if eth2 != 6 ///
 			, family(bin) link(logit) eform
+			
+			
+* Vaccine/SGTF interaction
+
+glm cox_ae14 i.sgtf##ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week age1 age2 age3 i.home_bin ///
+			 if eth2 != 6 ///
+			, family(bin) link(logit) eform
+		
+est store vax_int
+
+margins comorb_cat#vax if sgtf==0, asobserved
+
+est restore vax_int
+
+margins comorb_cat#vax if sgtf==1, asobserved
+
+est restore vax_int
+
+margins comorb_cat#vax, dydx(sgtf) asobserved
 
 
 *************************************
 /* Fully adjusted OR - age grouped */
 *************************************
 
-glm cox_ae14 i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+glm cox_ae14 i.sgtf##ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
 			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week ib1.agegroup6 i.home_bin ///
 			 if eth2 != 6 ///
 			, family(bin) link(logit) eform

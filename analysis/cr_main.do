@@ -963,7 +963,7 @@ tab comorb_cat, m
 /*  Censoring dates  */
 
 noi di "REMEMBER TO UPDATE DATE OF EC DATA UPLOAD"
-gen ec_data_date = date("21jan2022", "DMY")
+gen ec_data_date = date("28jan2022", "DMY")
 gen ec_data_cens = ec_data_date-7				// Censor AE data 1 week prior to data upload
 
 gen risk_14_days = study_start+14
