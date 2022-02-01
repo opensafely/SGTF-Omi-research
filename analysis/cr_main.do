@@ -1041,11 +1041,16 @@ gen cox_pop = (study_start < ec_data_cens)			// Include if data before EC data c
 * Censor at death or EC data censor
 gen ae_surv_d = min(ae_covid_date, died_date_ons, ec_data_cens)
 gen ae_surv_d1 = ae_surv_d+1
+gen ae_surv_d14 = min(ae_covid_date, died_date_ons, ec_data_cens, study_start+14)
 
 gen cox_ae = (ae_covid_date < .)
 replace cox_ae = 0 if (ae_covid_date > ae_surv_d)
 
 tab cox_ae, m
+
+* Censor at 14-days
+gen cox_ae14 = (ae_covid_date < .)
+replace cox_ae14 = 0 if (ae_covid_date > ae_surv_d14)
 
 gen cox_admit = cox_ae
 replace cox_admit = 0 if ae_admit != 1
@@ -1072,74 +1077,9 @@ gen cox_time = stime_death-study_start
 gen cox_time_d = stime_death-study_start if cox_death==1
 
 
-/* Hospital and ICU admission */
-gen stime_hosp_test = min((covid_admission_date+1), dereg_date, vacc_cens, ons_data_cens)
-gen end_hosp_test = (covid_admission_date < .)
-replace end_hosp_test = 0 if (covid_admission_date > stime_hosp_test) // censor
-gen time_hosp_test = stime_hosp_test-study_start
-
-summ time_hosp_test, d
-count if covid_admission_date == study_start
-count if dereg_date <= study_start
-
-gen hosp_28 = end_hosp_test
-replace hosp_28 = 0 if time_hosp_test > 28
-
-gen stime_icu_test = min(icu_admission_date, dereg_date, vacc_cens)
-gen end_icu_test = (icu_admission_date < .)
-replace end_icu_test = 0 if (icu_admission_date > stime_icu_test) // censor
-gen time_icu_test = stime_icu_test-study_start
-
-* Death given hospital
-gen end_death_hosp = cox_death
-gen time_death_hosp = (stime_death-covid_admission_date)+1
-gen time_death_hosp1 = (stime_death-study_start)+1
-replace end_death_hosp = . if end_hosp_test != 1 // blank if no hospital admission
-replace time_death_hosp =. if end_hosp_test != 1
-replace time_death_hosp1 =. if end_hosp_test != 1
-
-* Days spent in ICU
-replace covid_icu_days = . if covid_icu_days <= 0
-gen icu_pop = (covid_icu_days > 0)
-replace icu_pop = 0 if covid_icu_days==.
-
-* Death given ICU
-gen end_death_icu = cox_death
-gen time_death_icu = (stime_death-icu_admission_date)+1
-gen time_death_icu1 = (stime_death-study_start)+1
-replace end_death_icu = . if end_icu_test != 1 // blank if no icu admission
-replace time_death_icu =. if end_icu_test != 1
-replace time_death_icu1 =. if end_icu_test != 1
-
-* Death in or out of hospital
-gen death_inout = 1 if cox_death == 1 & end_hosp_test == 1 // Death and hospital admission
-replace death_inout = 0 if cox_death == 1 & end_hosp_test == 0 // Death no hospital
-
-* Discharge
-gen hosp_discharge = (covid_discharge_date+7 < died_date_ons) // Survive 1 week post discharge
-tab end_hosp_test hosp_discharge
-tab end_death_hosp hosp_discharge
-
-bysort hosp_discharge: summ time_death_hosp, d
-bysort end_death_hosp hosp_discharge: summ time_death_hosp, d
-
-* Discharge as censor
-gen comp_death_hosp = end_death_hosp
-replace comp_death_hosp = 0 if hosp_discharge == 1
-
-gen stime_comp_death = min(died_date_ons, covid_discharge_date+7)
-gen time_comp_death = (stime_comp_death-covid_admission_date)+1
-
-tab end_death_hosp comp_death_hosp
-
-bysort comp_death_hosp: summ time_comp_death, d
-
-* Format date variables
-format ons_data_date ons_data_cens risk_28_days risk_40_days stime_death stime_comp_death stime_hosp_test stime_icu_test %td
-
 */
 
-format ec_data_date ec_data_cens ae_surv_d %td
+format ec_data_date ec_data_cens ae_surv_d ae_surv_d1 ae_surv_d14 %td
 		
 *********************
 *  Label variables  *
@@ -1265,7 +1205,9 @@ label var ae_covid_date					"Raw date of AE"
 label var died_date_ons					"ONS death date"
 label var ae_surv_d						"Cox survival time date"
 label var ae_surv_d1					"Cox survival time date plus 1 day"
+label var ae_surv_d14					"Cox survival time (censored at 14-days)"
 label var cox_ae						"AE outcome for Cox"
+label var cox_ae14						"AE outcome for Cox (censored at 14-days)"
 label var cox_admit						"AE admission outcome for Cox"
 label var cox_ae_time					"Cox follow-up time"
 label var any_ae						"AE covid any time"

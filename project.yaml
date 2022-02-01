@@ -73,3 +73,13 @@ actions:
         log: logs/an_cox_imputed.log
       highly_sensitive:
         data2: output/an_imputed_eth2.ster
+        
+  anRISK:
+    run: stata-mp:latest analysis/an_risk.do
+    needs: [crMAIN]
+    outputs:
+      moderately_sensitive:
+        log: logs/an_risk.log
+        table1text: output/table3.txt
+        table1xlsx: output/table3.xlsx
+        
