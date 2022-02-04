@@ -947,6 +947,12 @@ tab spleen
 *(13) other immunosuppression
 tab other_immuno
 
+*create renal flag
+gen renal_flag=0
+replace renal_flag=1 if inlist(reduced_kidney_function_cat2,2,3,4,5)
+tab renal_flag reduced_kidney_function_cat2
+replace renal_flag=1 if organ_transplant==1
+
 *create a total comborb var
 order chronic_respiratory_disease asthma_severe chronic_cardiac_disease dm cancer_nonhaemPrevYear cancer_haemPrev5Years chronic_liver_disease stroke_dementia egfr60 organ_transplant spleen other_immuno
 egen totComorbsOfInterest=rowtotal(chronic_respiratory_disease - other_immuno)
@@ -1203,6 +1209,7 @@ label var temporary_immunodeficiency_date "Temporary immunosuppression, date"
 label var dialysis						"Dialysis"
 */
 label var comorb_cat					"Categorical number of comorbidites"
+label var renal_flag					"Flag for renal disease"
 
 	
 * Outcomes and follow-up

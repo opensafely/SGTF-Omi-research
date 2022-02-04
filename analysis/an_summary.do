@@ -53,7 +53,7 @@ drop if has_sgtf==0
 			
 * Tabulate number of AE admissions and deaths by SGTF and covariates
 
-foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nomiss smoke_nomiss2 ///
+foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 renal_flag smoke_nomiss smoke_nomiss2 ///
 			obese4cat hh_total_cat home_bin region rural_urban5 comorb_cat start_week vax prev_inf {
 			
 			noi disp "Table `var'"
