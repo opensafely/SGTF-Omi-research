@@ -1165,6 +1165,13 @@ label var c_ethnicity					"Centred ethnicity (values: -2/+2)"
 */
 
 * Comorbidities
+
+label var diabcat						"Diabetes, grouped"
+label var dm							"Diabetes"
+label var chronic_cardiac_disease		"Heart disease"
+label var egfr60						"Binary CKD"
+label var reduced_kidney_function_cat2	"Reduced kidney function" 
+
 /*
 label var chronic_respiratory_disease	"Respiratory disease (excl. asthma)"
 label var asthmacat						"Asthma, grouped by severity (OCS use)"
