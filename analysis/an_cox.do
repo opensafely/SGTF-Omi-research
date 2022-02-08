@@ -295,7 +295,7 @@ file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(
 /* Specific comorbidities */
 
 * Renal
-stcox i.sgtf ib2.vax ///
+stcox i.sgtf ib2.vax age1 age2 age3 ///
 			if renal_flag == 1 ///
 			, strata(utla_group)
 			
@@ -317,7 +317,7 @@ file write tablecontent ("Renal f.adj") _tab
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
 * Diabetes
-stcox i.sgtf ib2.vax ///
+stcox i.sgtf ib2.vax age1 age2 age3 ///
 			if dm == 1 ///
 			, strata(utla_group)
 			
@@ -339,7 +339,7 @@ file write tablecontent ("DM f.adj") _tab
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 			
 * CVD
-stcox i.sgtf ib2.vax ///
+stcox i.sgtf ib2.vax age1 age2 age3 ///
 			if chronic_cardiac_disease == 1 ///
 			, strata(utla_group)
 			
