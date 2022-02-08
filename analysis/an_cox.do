@@ -291,6 +291,75 @@ lincom 1.sgtf + 1.sgtf#2.comorb_cat, eform	// 2+ comorbs
 file write tablecontent ("2+") _tab 
 file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
 
+
+/* Specific comorbidities */
+
+* Renal
+stcox i.sgtf ib2.vax ///
+			if renal_flag == 1 ///
+			, strata(utla_group)
+			
+tab sgtf cox_ae if e(sample)
+
+lincom 1.sgtf, eform
+file write tablecontent ("Renal v.adj") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+			
+stcox i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib49.start_week age1 age2 age3 i.home_bin ///
+			 if eth2 != 6 & renal_flag == 1 ///
+			 , strata(utla_group)
+			 
+tab sgtf cox_ae if e(sample)
+
+lincom 1.sgtf, eform
+file write tablecontent ("Renal f.adj") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+
+* Diabetes
+stcox i.sgtf ib2.vax ///
+			if dm == 1 ///
+			, strata(utla_group)
+			
+tab sgtf cox_ae if e(sample)
+
+lincom 1.sgtf, eform
+file write tablecontent ("DM v.adj") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+			
+stcox i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib49.start_week age1 age2 age3 i.home_bin ///
+			 if eth2 != 6 & dm == 1 ///
+			 , strata(utla_group)
+			 
+tab sgtf cox_ae if e(sample)
+
+lincom 1.sgtf, eform
+file write tablecontent ("DM f.adj") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+			
+* CVD
+stcox i.sgtf ib2.vax ///
+			if chronic_cardiac_disease == 1 ///
+			, strata(utla_group)
+			
+tab sgtf cox_ae if e(sample)
+
+lincom 1.sgtf, eform
+file write tablecontent ("CVD v.adj") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+			
+stcox i.sgtf ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
+			 ib1.rural_urban5 ib49.start_week age1 age2 age3 i.home_bin ///
+			 if eth2 != 6 & chronic_cardiac_disease == 1 ///
+			 , strata(utla_group)
+			 
+tab sgtf cox_ae if e(sample)
+
+lincom 1.sgtf, eform
+file write tablecontent ("CVD f.adj") _tab 
+file write tablecontent %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") _tab %6.4f (r(p)) _n
+
 /*
 * Test for trend
 stcox i.sgtf i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
