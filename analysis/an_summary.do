@@ -45,6 +45,8 @@ foreach var of varlist agegroup agegroupA agegroup6 male imd eth5 eth2 smoke_nom
 
 */
 
+tab has_sgtf start_week
+
 * DROP IF NO DATA ON SGTF
 noi di "DROPPING NO SGTF DATA" 
 drop if has_sgtf==0
