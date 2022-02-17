@@ -458,6 +458,9 @@ est store e_age
 * N (events)
 tab sgtf agegroup6 if e(sample)
 
+estat phtest, d
+
+
 stcox i.sgtf##ib0.agegroup6 ib2.vax i.male ib1.imd ib1.eth2 ib1.smoke_nomiss2 ib1.obese4cat ib1.hh_total_cat ///
 			 ib1.rural_urban5 ib0.comorb_cat ib49.start_week i.home_bin ///
 			 if eth2 != 6 ///

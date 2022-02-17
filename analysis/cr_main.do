@@ -1306,9 +1306,9 @@ tab cox_death start_week if cox_pop==1 & has_sgtf==1, m
 *  Missing values  *
 ********************
 
-*tab smoke sgtf if cox_pop==1 & has_sgtf==1 & utla_group !="", m
-*tab bmicat sgtf if cox_pop==1 & has_sgtf==1 & utla_group !="", m
-*tab care_home_type sgtf if cox_pop==1 & has_sgtf==1 & utla_group !="", m
+tab smoke sgtf if inlist(start_week,49,50,51,52) & cox_pop==1 & has_sgtf==1 & utla_group !="", m
+tab bmicat sgtf if inlist(start_week,49,50,51,52) & cox_pop==1 & has_sgtf==1 & utla_group !="", m
+tab care_home_type sgtf if inlist(start_week,49,50,51,52) & cox_pop==1 & has_sgtf==1 & utla_group !="", m
 
 
 ***************
