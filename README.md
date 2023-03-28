@@ -1,5 +1,7 @@
 # SGTF-Omi-research
 
+The paper for this project is available here https://doi.org/10.1101/2022.05.03.22274602.
+
 You can run this project via [Gitpod](https://gitpod.io) in a web browser by clicking on this badge: [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/SGTF-Omi-research)
 
 [View on OpenSAFELY](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252FSGTF-Omi-research)
